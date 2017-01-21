@@ -1,5 +1,10 @@
 package com.gl.gdrivemate.demo;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -73,6 +78,8 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     ArrayList<RestPO> mRestlist;
     private SlidingUpPanelLayout mLayout;
     String searchItem;
+    String origin;
+    String mdestination;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //super.onCreate(savedInstanceState);
@@ -85,8 +92,53 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
         mapFragment.getMapAsync(this);
 
         btnFindPath = (Button) findViewById(R.id.btnFindPath);
-        etOrigin = (EditText) findViewById(R.id.etOrigin);
-        etDestination = (EditText) findViewById(R.id.etDestination);
+     //   etOrigin = (EditText) findViewById(R.id.etOrigin);
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        PlaceAutocompleteFragment autocompleteFragment_dst = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_dest);
+        autocompleteFragment_dst.setHint("Destination");
+        autocompleteFragment.setHint("Origin");
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+
+        autocompleteFragment.setFilter(typeFilter);
+        autocompleteFragment_dst.setFilter(typeFilter);
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+
+                origin = place.getName().toString();
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        autocompleteFragment_dst.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+
+                mdestination = place.getName().toString();
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+      //  etDestination = (EditText) findViewById(R.id.etDestination);
 
         btnFindPath.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,8 +373,8 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //region Private Methods
     private void sendRequest() {
-        String origin = etOrigin.getText().toString();
-        String destination = etDestination.getText().toString();
+        String origin1 = origin;
+        String destination = mdestination;
         if (origin.isEmpty()) {
             Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
             return;

@@ -27,21 +27,37 @@
             sothree:theme="@style/ActionBar"
             android:layout_width="match_parent"/>
 
-        <EditText
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:gravity="center"
-            android:id="@+id/etOrigin"
-            android:hint="Enter origin address" />
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            />
 
-        <EditText
+        <fragment
+            android:id="@+id/place_autocomplete_fragment_dest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:gravity="center"
-            android:hint="Enter destination address"
-            android:id="@+id/etDestination" />
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            />
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+
+            <!--android:gravity="center"-->
+            <!--android:id="@+id/etOrigin"-->
+            <!--android:hint="Enter origin address" />-->
+
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+
+            <!--android:gravity="center"-->
+            <!--android:hint="Enter destination address"-->
+            <!--android:id="@+id/etDestination" />-->
         <!--android:layout_marginTop="?attr/actionBarSize"-->
 
         <TextView
