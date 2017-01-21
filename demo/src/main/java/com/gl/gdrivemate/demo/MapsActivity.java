@@ -45,14 +45,18 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import Modules.DirectionFinder;
 import Modules.DirectionFinderListener;
 import Modules.GooglePlacesReadTask;
+import Modules.RestAdapter;
+import Modules.RestPO;
+import Modules.ResultsListener;
 import Modules.Route;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener , ResultsListener {
     private GoogleMap mMap;
     private Button btnFindPath;
     private EditText etOrigin;
@@ -61,11 +65,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
-
+    RestAdapter arrayAdapter;
     private static final String GOOGLE_API_KEY = "AIzaSSDFSDF8Kv2eP0PM8adf5dSDFysdfas323SD3HA";
     private int PROXIMITY_RADIUS = 500;
     private static final String TAG = "MapsActivity";
-
+    ArrayList<RestPO> mRestlist;
     private SlidingUpPanelLayout mLayout;
 
     @Override
@@ -97,47 +101,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
 
         ListView lv = (ListView) findViewById(R.id.list);
+        mRestlist = new ArrayList<RestPO>();
+// Create the adapter to convert the array to views
+        arrayAdapter = new RestAdapter(this, mRestlist);
+        arrayAdapter.setNotifyOnChange(true);
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(MapsActivity.this, "onItemClick", Toast.LENGTH_SHORT).show();
             }
         });
-
-        List<String> your_array_list = Arrays.asList(
-                "This",
-                "IsNot",
-                "An",
-                "Example",
-                "ListView",
-                "That",
-                "You",
-                "Can",
-                "Scroll",
-                ".",
-                "It",
-                "Shows",
-                "How",
-                "Any",
-                "Scrollable",
-                "View",
-                "Can",
-                "Be",
-                "Included",
-                "As",
-                "A",
-                "Child",
-                "Of",
-                "SlidingUpPanelLayout"
-        );
-
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                your_array_list );
 
         lv.setAdapter(arrayAdapter);
 
@@ -355,7 +329,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Object[] toPass = new Object[2];
         toPass[0] = mMap;
         toPass[1] = googlePlacesUrl.toString();
+        googlePlacesReadTask.setOnResultsListener(this);
         googlePlacesReadTask.execute(toPass);
+    }
+
+    @Override
+    public void onResultsSucceeded(List<HashMap<String, String>> list) {
+        mRestlist.clear();
+        for (int i = 0; i < list.size(); i++) {
+            RestPO restPO = new RestPO();
+            HashMap<String, String> googlePlace = list.get(i);
+            restPO.setLat(googlePlace.get("lat"));
+            restPO.setLng(googlePlace.get("lng"));
+            restPO.setPlace_name(googlePlace.get("place_name"));
+            restPO.setVicinity(googlePlace.get("vicinity"));
+            mRestlist.add(restPO);
+        }
+        arrayAdapter.notifyDataSetChanged();
     }
 
 

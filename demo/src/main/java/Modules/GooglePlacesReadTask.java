@@ -9,10 +9,17 @@ import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     String googlePlacesData = null;
     GoogleMap googleMap;
+    ResultsListener listener;
 
+    public void setOnResultsListener(ResultsListener listener) {
+        this.listener = listener;
+    }
     @Override
     protected String doInBackground(Object... inputObj) {
         try {
@@ -32,6 +39,8 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
         Object[] toPass = new Object[2];
         toPass[0] = googleMap;
         toPass[1] = result;
+        placesDisplayTask.setOnResultsListener(listener);
         placesDisplayTask.execute(toPass);
+
     }
 }

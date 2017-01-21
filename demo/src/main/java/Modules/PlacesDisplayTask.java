@@ -22,6 +22,11 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
     JSONObject googlePlacesJson;
     GoogleMap googleMap;
 
+    ResultsListener listener;
+
+    public void setOnResultsListener(ResultsListener listener) {
+        this.listener = listener;
+    }
     @Override
     protected List<HashMap<String, String>> doInBackground(Object... inputObj) {
 
@@ -53,6 +58,7 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
             markerOptions.title(placeName + " : " + vicinity);
             googleMap.addMarker(markerOptions);
         }
+        listener.onResultsSucceeded(list);
     }
 }
 
