@@ -30,7 +30,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize"
+
             android:gravity="center"
             android:id="@+id/etOrigin"
             android:hint="Enter origin address" />
@@ -38,11 +38,11 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize"
+
             android:gravity="center"
             android:hint="Enter destination address"
             android:id="@+id/etDestination" />
-
+        <!--android:layout_marginTop="?attr/actionBarSize"-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
