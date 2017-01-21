@@ -43,6 +43,19 @@
             android:hint="Enter destination address"
             android:id="@+id/etDestination" />
         <!--android:layout_marginTop="?attr/actionBarSize"-->
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:text="Search For:"
+            android:layout_marginBottom="5dp"/>
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/spinner_title"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

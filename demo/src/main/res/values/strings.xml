@@ -4,6 +4,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_hide">Hide Panel</string>
     <string name="action_show">Show Panel</string>
+    <string name="spinner_title">Select Place</string>
     <string name="action_anchor_enable">Enable Anchor Point</string>
     <string name="action_anchor_disable">Disable Anchor Point</string>
     <string name="hello"><![CDATA[<b>Your Interactive Drive Partner</b><br/> Brought to you by<br/> Team Elevation]]></string>

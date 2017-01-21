@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +57,7 @@ import Modules.RestPO;
 import Modules.ResultsListener;
 import Modules.Route;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener , ResultsListener {
+public class MapsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback, DirectionFinderListener , ResultsListener {
     private GoogleMap mMap;
     private Button btnFindPath;
     private EditText etOrigin;
@@ -71,7 +72,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String TAG = "MapsActivity";
     ArrayList<RestPO> mRestlist;
     private SlidingUpPanelLayout mLayout;
-
+    String searchItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //super.onCreate(savedInstanceState);
@@ -93,6 +94,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 sendRequest();
             }
         });
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(this);
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("restaurant");
+        categories.add("ATMs");
+        categories.add("Gas Stations");
+        categories.add("Hospitals");
+
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
 
         //End Maps
 
@@ -317,7 +340,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void placesSuggestion(double latitude, double longitude) {
-        String type = "restaurant";
+        String type = searchItem;
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
@@ -346,6 +369,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mRestlist.add(restPO);
         }
         arrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        searchItem = parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        searchItem = "restaurant";
     }
 
 
