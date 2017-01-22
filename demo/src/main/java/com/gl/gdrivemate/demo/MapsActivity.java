@@ -72,7 +72,6 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
     RestAdapter arrayAdapter;
-    private static final String GOOGLE_API_KEY = "AIzaSSDFSDF8Kv2eP0PM8adf5dSDFysdfas323SD3HA";
     private int PROXIMITY_RADIUS = 500;
     private static final String TAG = "MapsActivity";
     ArrayList<RestPO> mRestlist;
@@ -374,8 +373,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     //region Private Methods
     private void sendRequest() {
         String origin1 = origin;
-        String destination = mdestination;
-        if (origin.isEmpty()) {
+        String destination = mdestination;if (origin1.isEmpty()) {
             Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -398,7 +396,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&types=" + type);
         googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyDnwLF2-WfK8cVZt9OoDYJ9Y8kspXhEHfI");
+        googlePlacesUrl.append("&key=" + getResources().getString(R.string.google_maps_key));
 
         GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
         Object[] toPass = new Object[2];

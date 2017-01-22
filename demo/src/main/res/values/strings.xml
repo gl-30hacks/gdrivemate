@@ -9,4 +9,5 @@
     <string name="action_anchor_disable">Disable Anchor Point</string>
     <string name="hello"><![CDATA[<b>Your Interactive Drive Partner</b><br/> Brought to you by<br/> Team Elevation]]></string>
     <string name="follow"><![CDATA[Follow us<br/>on <a href="http://twitter.com/umanoapp">Twitter</a>]]></string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAhoQEcIJCI_mpRInfAJmyN3RPp_QmXRd4</string>
 </resources>
