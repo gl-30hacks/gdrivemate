@@ -22,6 +22,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -43,6 +44,7 @@ import  com.gl.gdrivemate.slidinguppanel.SlidingUpPanelLayout.PanelState;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -79,6 +81,9 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     String searchItem;
     String origin;
     String mdestination;
+    LatLng start;
+    LatLng end;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //super.onCreate(savedInstanceState);
@@ -112,6 +117,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
                 // TODO: Get info about the selected place.
 
                 origin = place.getName().toString();
+              start =  place.getLatLng();
                 Log.i(TAG, "Place: " + place.getName());
             }
 
@@ -128,6 +134,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
                 // TODO: Get info about the selected place.
 
                 mdestination = place.getName().toString();
+                end =  place.getLatLng();
                 Log.i(TAG, "Place: " + place.getName());
             }
 
@@ -290,11 +297,17 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+
+// Set the camera to the greatest possible zoom level that includes the
+// bounds
         LatLng hcmus = new LatLng(28.7041, 77.1025);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 18));
         originMarkers.add(mMap.addMarker(new MarkerOptions()
                 .title("New Delhi")
                 .position(hcmus)));
+       mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 6));
+
+
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -341,8 +354,19 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
 
+
+
+// Set the camera to the greatest possible zoom level that includes the
+// bounds
+
         for (Route route : routes) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+//             LatLngBounds AUSTRALIA = new LatLngBounds(
+//                     route.endLocation, route.startLocation);
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 4));
+          // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 4));
+
+           start = route.startLocation;
             ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
             ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
 
@@ -364,6 +388,12 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
                 polylineOptions.add(route.points.get(i));
 
             placesSuggestion(route.endLocation.latitude, route.endLocation.longitude);
+end = route.endLocation;
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.endLocation, 4));
+             LatLngBounds AUSTRALIA = new LatLngBounds(
+                    route.startLocation, route.startLocation);
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(AUSTRALIA.getCenter(), 5));
             polylinePaths.add(mMap.addPolyline(polylineOptions));
 
 
@@ -373,11 +403,12 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     //region Private Methods
     private void sendRequest() {
         String origin1 = origin;
-        String destination = mdestination;if (origin1.isEmpty()) {
+        String destination = mdestination;
+        if (TextUtils.isEmpty(origin1)) {
             Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (destination.isEmpty()) {
+        if (TextUtils.isEmpty(destination)) {
             Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -418,6 +449,8 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
             restPO.setVicinity(googlePlace.get("vicinity"));
             mRestlist.add(restPO);
         }
+
+
         arrayAdapter.notifyDataSetChanged();
     }
 
